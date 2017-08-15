@@ -25,10 +25,13 @@ public class CollocateDialog {
             String desPath = beforeUpload(panelHolder);
             if (desPath == null) return;
             new Thread(() -> {
+                boolean result = true;
                 for (String path : panelHolder.getPathList()) {
-                    com.mz.efficient.view.FileUtil.copy(new File(path), new File(desPath));
+                    result &= com.mz.efficient.view.FileUtil.copy(new File(path), new File(desPath));
                 }
-                Messages.showMessageDialog("上传成功！", "提示", null);
+                if (result) {
+                    Messages.showMessageDialog("上传成功！", "提示", null);
+                }
             }).start();
         });
         dialog.show();
