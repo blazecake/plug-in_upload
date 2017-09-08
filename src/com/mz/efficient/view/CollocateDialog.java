@@ -27,10 +27,11 @@ public class CollocateDialog {
             new Thread(() -> {
                 boolean result = true;
                 for (String path : panelHolder.getPathList()) {
-                    result &= com.mz.efficient.view.FileUtil.copy(new File(path), new File(desPath));
+                    result &= com.mz.efficient.view.FileUtil.copy(new File(path), new File(desPath), panelHolder.getjCheckBoxValue());
                 }
                 if (result) {
-                    Messages.showMessageDialog("上传成功！", "提示", null);
+                    panelHolder.save();
+                    SwingUtilities.invokeLater(() -> Messages.showMessageDialog("上传成功！", "提示", null));
                 }
             }).start();
         });
@@ -44,7 +45,7 @@ public class CollocateDialog {
             Messages.showMessageDialog("请输入上传路径！", "提示", null);
             return null;
         }
-        if (panelHolder.getPathList() == null && panelHolder.getPathList().size() == 0) {
+        if (panelHolder.getPathList() == null || panelHolder.getPathList().size() == 0) {
             Messages.showMessageDialog("请选择待上传的文件！", "提示", null);
             return null;
         }

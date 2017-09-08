@@ -11,7 +11,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -19,7 +21,7 @@ import java.util.List;
  */
 public class FileUtil {
 
-    public static boolean copy(File srcFile, File desFile) {
+    public static boolean copy(File srcFile, File desFile, boolean isFileAddDate) {
         if (srcFile.isDirectory()) {
             String filepath = srcFile.getAbsolutePath();
             filepath = filepath.replaceAll("\\\\", "/");
@@ -34,7 +36,7 @@ public class FileUtil {
             }
             //遍历文件夹
             for (File f : srcFile.listFiles()) {
-                copy(f, copy);
+                copy(f, copy, isFileAddDate);
             }
         } else {
             byte[] b = new byte[1024];
@@ -49,7 +51,13 @@ public class FileUtil {
                     String toFilepath = desFile.getAbsolutePath();
                     toFilepath = toFilepath.replaceAll("\\\\", "/");
                     int lastIndexOf = filepath.lastIndexOf("/");
-                    toFilepath = toFilepath + filepath.substring(lastIndexOf, filepath.length());
+                    String fileName = filepath.substring(lastIndexOf, filepath.length());
+                    if (isFileAddDate) {
+                        StringBuilder stringBuilder = new StringBuilder(fileName);
+                        int index = fileName.lastIndexOf(".");
+                        fileName = stringBuilder.insert(index, "-" + new SimpleDateFormat("yyyy-MM-dd").format(new Date())).toString();
+                    }
+                    toFilepath = toFilepath + fileName;
 
                     File newFile = new File(toFilepath);
                     fos = new FileOutputStream(newFile);
